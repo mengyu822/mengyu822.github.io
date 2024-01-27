@@ -15,6 +15,9 @@ let hasScenices = ref([])
 let currentPage = ref<number>(1)
 //一页展示几条数据
 let pageSize = ref<number>(10)
+//存储景点总数
+let totalScenicsNum = ref<number>(30)
+
 // 组件挂载完毕,先发送一次请求
 onMounted(() => {
   getScenicsInfo()
@@ -23,19 +26,19 @@ onMounted(() => {
 //获取景点数据
 //if(currentPage.value==1)结构模拟分页数据
 const getScenicsInfo = async () => {
-  let result: any = await reqScenics()
+  let result: any = await reqScenics(currentPage.value,pageSize.value)
   if (result.status == 200) {
-    hasScenices.value = result.data
+    hasScenices.value = result.data.items;
   }
-  console.log(result)
+  // console.log(result.data.items)
 }
 //分页器页码发生变化时回调
 const handleCurrentChange = () => {
-  getScenicsInfo()
+  getScenicsInfo();
 }
 //分页器页大小变化回调
 const handleSizeChange = () => {
-  getScenicsInfo()
+  getScenicsInfo();
 }
 </script>
 
@@ -69,7 +72,7 @@ const handleSizeChange = () => {
           :page-sizes="[10, 20, 30, 40]"
           :background="true"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="11"
+          :total="totalScenicsNum"
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
         />
