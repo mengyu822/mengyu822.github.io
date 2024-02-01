@@ -4,12 +4,9 @@
     <div class="content">
       <div class="left">等级:</div>
       <ul class="level-list" >
-        <li class="active">全部</li>
-        <li>五级</li>
-        <li>四级</li>
-        <li>三级</li>
-        <li>二级</li>
-        <li>一级</li>
+        <li :class="{ 'active': selectedIndex === -1 }"  @click="sendLevel('全部');selectItem(-1)">全部</li>
+        <li  v-for="(item,index) in scenicsLevel" :key="index" @click="sendLevel(item);selectItem(index)" :class="{ 'active': selectedIndex === index }">{{ item }}</li>
+
       </ul>
       
     </div>
@@ -17,6 +14,32 @@
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted } from 'vue'
+import { reqScenicsLevelAndRegion } from "@/api/home";
+
+let scenicsLevel = ref([])
+//
+onMounted(()=>{
+  getScenicsLevel();
+
+})
+// 获取景点等级
+const getScenicsLevel = async () => {
+  let result: any = await reqScenicsLevelAndRegion();
+  if (result.status == 200) {
+    scenicsLevel.value =  result.data.level
+  }
+  // console.log(result)
+}
+//
+const selectedIndex = ref(-1);
+
+const selectItem = (index:any) => {
+  selectedIndex.value = index;
+};
+//
+defineProps(['sendLevel'])
+
 
 </script>
 
